@@ -1,0 +1,73 @@
+PROJECT MASTER DOC
+Claude Collaboration Template
+
+📋 HOW TO USE THIS FILE
+1. Fill in sections 1–4 once. Update them whenever your project changes.
+2. Add tasks to section 5 before each Claude session.
+3. At the end of each session, ask Claude: "Update the master doc — log what was done, mark tasks complete, note any decisions."
+4. Replace this file in your Project with the updated version.
+
+
+1. WHO I AM
+Name / Role: [Your name and what you do]
+Project: [Project name]
+Goal: [What you're trying to achieve in 1-2 lines]
+
+2. PROJECT CONTEXT
+Background: [Brief description of the project]
+
+Key facts Claude should always know:
+[Fact 1]
+[Fact 2]
+[Fact 3]
+
+3. PREFERENCES & STYLE
+Language: [e.g. English, casual tone]
+Output format: [e.g. short answers, bullet points, code only]
+What to avoid: [e.g. long explanations, unnecessary questions]
+
+4. DECISIONS & MEMORY
+(Claude will update this section over time)
+[Decision made — date]
+[Important choice or direction]
+
+5. CURRENT TASKS
+Add tasks before each session. Claude will mark them done.
+
+#
+Task Description
+Status
+1
+[Add your first task here]
+[ ] Pending
+2
+[Add your second task here]
+[ ] Pending
+3
+[Add your third task here]
+[ ] Pending
+
+
+6. SESSION LOG
+(Claude updates this after each session — newest entry at top)
+
+Date
+Task
+What Was Done
+Status
+[Date]
+[Task name]
+[What Claude did / what was produced / what changed]
+✅ Done
+—
+—
+—
+—
+
+
+7. FILES IN THIS PROJECT
+List the files you've uploaded so Claude knows what's available:
+[filename.pdf] — [what it is]
+[data.xlsx] — [what it is]
+
+——— End of Master Doc ———
