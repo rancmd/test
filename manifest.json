@@ -1,0 +1,18 @@
+{
+  "name": "PIP-DASH",
+  "short_name": "PIP-DASH",
+  "description": "Pip-Boy inspired retro terminal dashboard",
+  "start_url": "/test/",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
