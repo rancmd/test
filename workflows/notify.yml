@@ -1,0 +1,12 @@
+name: Notify
+on:
+  workflow_dispatch:
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        run: |
+          curl -s -X POST "https://ntfy.sh/pipdash-ran77" \
+            -H "Title: PIP-DASH" \
+            -d "Claude is done"
