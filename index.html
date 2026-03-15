@@ -15,75 +15,95 @@
 </head>
 <body>
 
-<div class="pixel-corner tl"></div>
-<div class="pixel-corner tr"></div>
-<div class="pixel-corner bl"></div>
-<div class="pixel-corner br"></div>
-
-<!-- HEADER -->
-<div id="header">
-  <div id="logo">PIP-DASH</div>
-  <div id="header-right">
-    <div class="hdr-stat"><div class="live-dot"></div> ONLINE</div>
-    <div class="hdr-stat">
-      <svg width="20" height="11" viewBox="0 0 22 11" fill="none">
-        <rect x="0" y="1" width="18" height="9" stroke="white" stroke-width="1.5"/>
-        <rect x="18" y="3" width="4" height="5" fill="white"/>
-        <rect id="bat-fill" x="1.5" y="2.5" width="12" height="6" fill="white"/>
-      </svg>
-      <span id="hdr-bat-pct">87%</span>
-    </div>
-    <div id="hdr-clock">--:--:--</div>
+<!-- ROTATE SCREEN MESSAGE -->
+<div id="rotate-msg">
+  <div class="rotate-inner">
+    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="18" width="40" height="26" rx="2" stroke="white" stroke-width="2"/>
+      <rect x="14" y="22" width="32" height="18" fill="none" stroke="white" stroke-width="1"/>
+      <circle cx="30" cy="48" r="2" fill="white"/>
+      <path d="M44 8 L52 16 L44 24" stroke="white" stroke-width="2" fill="none" stroke-linecap="square"/>
+      <path d="M8 36 L52 16" stroke="white" stroke-width="1.5" stroke-dasharray="3 3"/>
+    </svg>
+    <div class="rotate-title">ROTATE DEVICE</div>
+    <div class="rotate-sub">PIP-DASH REQUIRES LANDSCAPE MODE</div>
   </div>
 </div>
 
-<!-- TABBAR -->
-<div id="tabbar">
-  <button class="tab active" data-page="home" onclick="showPage('home')">
-    <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><polygon points="10,1 1,9 3,9 3,17 8,17 8,12 12,12 12,17 17,17 17,9 19,9"/></svg>
-    HOME
-  </button>
-  <button class="tab" data-page="stat" onclick="showPage('stat')">
-    <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><rect x="1" y="10" width="4" height="7"/><rect x="8" y="6" width="4" height="11"/><rect x="15" y="2" width="4" height="15"/></svg>
-    STAT
-  </button>
-  <button class="tab" data-page="scan" onclick="showPage('scan')">
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="5" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/><line x1="10" y1="1" x2="10" y2="4" stroke="white" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="19" stroke="white" stroke-width="1.5"/><line x1="1" y1="10" x2="4" y2="10" stroke="white" stroke-width="1.5"/><line x1="16" y1="10" x2="19" y2="10" stroke="white" stroke-width="1.5"/></svg>
-    SCAN
-  </button>
-  <button class="tab" data-page="vault" onclick="showPage('vault')">
-    <svg width="18" height="22" viewBox="0 0 16 20" fill="none"><rect x="1" y="8" width="14" height="11" stroke="white" stroke-width="1.5"/><path d="M4 8V5a4 4 0 0 1 8 0v3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="8" cy="13" r="2" fill="white"/><rect x="7" y="13" width="2" height="3" fill="white"/></svg>
-    VAULT
-  </button>
-  <button class="tab" data-page="radio" onclick="showPage('radio')">
-    <svg width="24" height="20" viewBox="0 0 22 18" fill="none"><rect x="2" y="6" width="18" height="11" stroke="white" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="white"/><line x1="5" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/><line x1="17" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/></svg>
-    RADIO
-  </button>
-  <button class="tab" data-page="tasks" onclick="showPage('tasks')">
-    <svg width="20" height="22" viewBox="0 0 18 20" fill="none"><rect x="1" y="1" width="16" height="18" stroke="white" stroke-width="1.5"/><line x1="5" y1="7" x2="13" y2="7" stroke="white" stroke-width="1.5"/><line x1="5" y1="11" x2="13" y2="11" stroke="white" stroke-width="1.5"/><line x1="5" y1="15" x2="10" y2="15" stroke="white" stroke-width="1.5"/></svg>
-    TASKS
-  </button>
-  <button class="tab" data-page="calc" onclick="showPage('calc')">
-    <svg width="18" height="22" viewBox="0 0 16 20" fill="none"><rect x="1" y="1" width="14" height="18" stroke="white" stroke-width="1.5"/><rect x="3" y="3" width="10" height="4" fill="white"/><rect x="3" y="10" width="3" height="2" fill="white"/><rect x="6.5" y="10" width="3" height="2" fill="white"/><rect x="10" y="10" width="3" height="2" fill="white"/><rect x="3" y="14" width="3" height="2" fill="white"/><rect x="6.5" y="14" width="3" height="2" fill="white"/><rect x="10" y="12" width="3" height="4" fill="white"/></svg>
-    CALC
-  </button>
-  <button class="tab" data-page="map" onclick="showPage('map')">
-    <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><polygon points="10,3 12,10 10,8 8,10" fill="white"/><polygon points="10,17 12,10 10,12 8,10" fill="none" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/></svg>
-    MAP
-  </button>
-</div>
+<!-- APP SHELL -->
+<div id="app">
 
-<!-- CONTENT: pages loaded dynamically -->
-<div id="content">
-  <div class="page active" id="page-home"></div>
-  <div class="page" id="page-stat"></div>
-  <div class="page" id="page-scan"></div>
-  <div class="page" id="page-vault"></div>
-  <div class="page" id="page-radio"></div>
-  <div class="page" id="page-tasks"></div>
-  <div class="page" id="page-calc"></div>
-  <div class="page" id="page-map"></div>
-</div>
+  <div class="pixel-corner tl"></div>
+  <div class="pixel-corner tr"></div>
+  <div class="pixel-corner bl"></div>
+  <div class="pixel-corner br"></div>
+
+  <!-- HEADER -->
+  <div id="header">
+    <div id="logo">PIP-DASH</div>
+    <div id="header-right">
+      <div class="hdr-stat"><div class="live-dot"></div> ONLINE</div>
+      <div class="hdr-stat">
+        <svg width="20" height="11" viewBox="0 0 22 11" fill="none">
+          <rect x="0" y="1" width="18" height="9" stroke="white" stroke-width="1.5"/>
+          <rect x="18" y="3" width="4" height="5" fill="white"/>
+          <rect id="bat-fill" x="1.5" y="2.5" width="12" height="6" fill="white"/>
+        </svg>
+        <span id="hdr-bat-pct">87%</span>
+      </div>
+      <div id="hdr-clock">--:--:--</div>
+    </div>
+  </div>
+
+  <!-- TABBAR -->
+  <div id="tabbar">
+    <button class="tab active" data-page="home" onclick="showPage('home')">
+      <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><polygon points="10,1 1,9 3,9 3,17 8,17 8,12 12,12 12,17 17,17 17,9 19,9"/></svg>
+      HOME
+    </button>
+    <button class="tab" data-page="stat" onclick="showPage('stat')">
+      <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><rect x="1" y="10" width="4" height="7"/><rect x="8" y="6" width="4" height="11"/><rect x="15" y="2" width="4" height="15"/></svg>
+      STAT
+    </button>
+    <button class="tab" data-page="scan" onclick="showPage('scan')">
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="5" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/><line x1="10" y1="1" x2="10" y2="4" stroke="white" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="19" stroke="white" stroke-width="1.5"/><line x1="1" y1="10" x2="4" y2="10" stroke="white" stroke-width="1.5"/><line x1="16" y1="10" x2="19" y2="10" stroke="white" stroke-width="1.5"/></svg>
+      SCAN
+    </button>
+    <button class="tab" data-page="vault" onclick="showPage('vault')">
+      <svg width="18" height="22" viewBox="0 0 16 20" fill="none"><rect x="1" y="8" width="14" height="11" stroke="white" stroke-width="1.5"/><path d="M4 8V5a4 4 0 0 1 8 0v3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="8" cy="13" r="2" fill="white"/><rect x="7" y="13" width="2" height="3" fill="white"/></svg>
+      VAULT
+    </button>
+    <button class="tab" data-page="radio" onclick="showPage('radio')">
+      <svg width="24" height="20" viewBox="0 0 22 18" fill="none"><rect x="2" y="6" width="18" height="11" stroke="white" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="white"/><line x1="5" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/><line x1="17" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/></svg>
+      RADIO
+    </button>
+    <button class="tab" data-page="tasks" onclick="showPage('tasks')">
+      <svg width="20" height="22" viewBox="0 0 18 20" fill="none"><rect x="1" y="1" width="16" height="18" stroke="white" stroke-width="1.5"/><line x1="5" y1="7" x2="13" y2="7" stroke="white" stroke-width="1.5"/><line x1="5" y1="11" x2="13" y2="11" stroke="white" stroke-width="1.5"/><line x1="5" y1="15" x2="10" y2="15" stroke="white" stroke-width="1.5"/></svg>
+      TASKS
+    </button>
+    <button class="tab" data-page="calc" onclick="showPage('calc')">
+      <svg width="18" height="22" viewBox="0 0 16 20" fill="none"><rect x="1" y="1" width="14" height="18" stroke="white" stroke-width="1.5"/><rect x="3" y="3" width="10" height="4" fill="white"/><rect x="3" y="10" width="3" height="2" fill="white"/><rect x="6.5" y="10" width="3" height="2" fill="white"/><rect x="10" y="10" width="3" height="2" fill="white"/><rect x="3" y="14" width="3" height="2" fill="white"/><rect x="6.5" y="14" width="3" height="2" fill="white"/><rect x="10" y="12" width="3" height="4" fill="white"/></svg>
+      CALC
+    </button>
+    <button class="tab" data-page="map" onclick="showPage('map')">
+      <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><polygon points="10,3 12,10 10,8 8,10" fill="white"/><polygon points="10,17 12,10 10,12 8,10" fill="none" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/></svg>
+      MAP
+    </button>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+    <div class="page active" id="page-home"></div>
+    <div class="page" id="page-stat"></div>
+    <div class="page" id="page-scan"></div>
+    <div class="page" id="page-vault"></div>
+    <div class="page" id="page-radio"></div>
+    <div class="page" id="page-tasks"></div>
+    <div class="page" id="page-calc"></div>
+    <div class="page" id="page-map"></div>
+  </div>
+
+</div><!-- /app -->
 
 <script src="app.js"></script>
 </body>

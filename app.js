@@ -4,12 +4,11 @@ const pages = ['home','stat','scan','vault','radio','tasks','calc','map'];
 async function loadPages() {
   for (const id of pages) {
     try {
-      const res = await fetch(`pages/${id}.html`);
+      const res = await fetch(`page-${id}.html`);
       const html = await res.text();
       document.getElementById('page-' + id).innerHTML = html;
     } catch(e) { console.warn('Could not load page:', id, e); }
   }
-  // init after pages are loaded
   initApp();
 }
 
@@ -22,7 +21,7 @@ function initApp() {
   setInterval(simBattery, 5000);
 }
 
-// ── Helpers ─────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────
 function el(id) { return document.getElementById(id); }
 
 // ── Clock ────────────────────────────────────────────
@@ -53,8 +52,7 @@ function simBattery() {
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  const page = el('page-' + id);
-  if (page) page.classList.add('active');
+  if (el('page-' + id)) el('page-' + id).classList.add('active');
   const tab = document.querySelector(`.tab[data-page="${id}"]`);
   if (tab) tab.classList.add('active');
   updateHomeTasks();
@@ -89,12 +87,19 @@ function selectStation(i) {
   document.querySelectorAll('.station').forEach((s, j) => s.classList.toggle('on', j === i));
   const wfEl = el('waveform');
   const statusEl = el('radio-status');
-  if (i === 2) { if(statusEl) statusEl.textContent = '■ STATIC'; if(wfEl) wfEl.style.opacity = '0.15'; }
-  else if (i === 3) { if(statusEl) statusEl.textContent = '? UNKNOWN SOURCE'; if(wfEl) wfEl.style.opacity = '0.5'; }
-  else { if(statusEl) statusEl.textContent = '▶ NOW BROADCASTING'; if(wfEl) wfEl.style.opacity = '1'; }
+  if (i === 2) {
+    if (statusEl) statusEl.textContent = '■ STATIC';
+    if (wfEl) wfEl.style.opacity = '0.15';
+  } else if (i === 3) {
+    if (statusEl) statusEl.textContent = '? UNKNOWN SOURCE';
+    if (wfEl) wfEl.style.opacity = '0.5';
+  } else {
+    if (statusEl) statusEl.textContent = '▶ NOW BROADCASTING';
+    if (wfEl) wfEl.style.opacity = '1';
+  }
 }
 
-// ── Scan (full screen) ────────────────────────────────
+// ── Scan ─────────────────────────────────────────────
 const scanData = [
   ['ENTITY DETECTED: HUMANOID', 'THREAT LEVEL: NON-HOSTILE', 'DISTANCE: 12.4M', 'STATUS: MOVING NE'],
   ['STRUCTURE: CONCRETE', 'AGE ESTIMATE: 47 YRS', 'INTEGRITY: 62%', 'RADIATION: TRACE'],
@@ -115,7 +120,6 @@ function doScan() {
   if (out) { out.classList.remove('show'); out.innerHTML = ''; }
   if (beamH) { beamH.classList.remove('on'); void beamH.offsetWidth; beamH.classList.add('on'); }
   if (beamV) { beamV.classList.remove('on'); void beamV.offsetWidth; beamV.classList.add('on'); }
-
   setTimeout(() => {
     if (beamH) beamH.classList.remove('on');
     if (beamV) beamV.classList.remove('on');
@@ -143,7 +147,7 @@ const vaultData = [
   { id: 'FILE-0333', text: 'VAULT 33 NEVER OPENED. POPULATION UNKNOWN. LAST PING: 14 YEARS AGO.' },
   { id: 'FILE-0501', text: 'OPERATION CLEAN SWEEP SUCCESSFUL. DETAILS REDACTED. AUTH: LEVEL 5.' },
   { id: 'FILE-0666', text: 'ANOMALY CANNOT BE EXPLAINED BY CURRENT SCIENCE. QUARANTINE RECOMMENDED.' },
-  { id: 'FILE-0777', text: 'THREE SUBJECTS SURVIVED THE TEST. ONLY ONE REMEMBERS. LOCATION: CLASSIFIED.' },
+  { id: 'FILE-0777', text: 'THREE SUBJECTS SURVIVED. ONLY ONE REMEMBERS. LOCATION: CLASSIFIED.' },
 ];
 let lastVault = -1;
 
