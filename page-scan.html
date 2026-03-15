@@ -1,17 +1,31 @@
-<div class="scan-full" id="scan-full" onclick="doScan()">
-  <div class="scan-beam-h" id="scan-beam-h"></div>
-  <div class="scan-beam-v" id="scan-beam-v"></div>
-  <div class="scan-crosshair">
-    <div class="crosshair-ring r1"></div>
-    <div class="crosshair-ring r2"></div>
-    <div class="crosshair-center"></div>
-    <div class="crosshair-line h"></div>
-    <div class="crosshair-line v"></div>
+<div class="page-title">SCANNER</div>
+<div class="two-col">
+  <div class="col-left" style="align-items:center;justify-content:center;">
+    <div class="scan-circle-wrap" id="scan-full" onclick="doScan()">
+      <div class="scan-beam-h" id="scan-beam-h"></div>
+      <div class="scan-beam-v" id="scan-beam-v"></div>
+      <div class="scan-crosshair">
+        <div class="crosshair-ring r1"></div>
+        <div class="crosshair-ring r2"></div>
+        <div class="crosshair-center"></div>
+        <div class="crosshair-line h"></div>
+        <div class="crosshair-line v"></div>
+      </div>
+      <div class="scan-corner tl"></div>
+      <div class="scan-corner tr"></div>
+      <div class="scan-corner bl"></div>
+      <div class="scan-corner br"></div>
+    </div>
+    <div class="scan-label-fs" id="scan-label">TAP TO SCAN</div>
   </div>
-  <div class="scan-corner tl"></div>
-  <div class="scan-corner tr"></div>
-  <div class="scan-corner bl"></div>
-  <div class="scan-corner br"></div>
-  <div class="scan-label-fs" id="scan-label">TAP TO SCAN</div>
-  <div class="scan-readout-fs" id="scan-readout"></div>
+  <div class="col-right" style="justify-content:center;">
+    <div class="scan-readout-fs" id="scan-readout" style="width:100%;"></div>
+    <div class="scan-idle" id="scan-idle">
+      <div style="font-size:11px;letter-spacing:3px;color:var(--dim);line-height:2.5;">
+        <div>> SCANNER READY</div>
+        <div>> AWAITING INPUT</div>
+        <div>> RANGE: 50M<span class="blink-cursor">_</span></div>
+      </div>
+    </div>
+  </div>
 </div>

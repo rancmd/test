@@ -1,8 +1,19 @@
 <div class="page-title">TASK LOG</div>
-<div class="tasks-wrap">
-  <div class="task-bar">
-    <input class="task-input" id="task-input" type="text" placeholder="NEW TASK..." maxlength="40" onkeydown="if(event.key==='Enter')addTask()">
-    <button class="task-add" onclick="addTask()">ADD</button>
+<div class="two-col">
+  <div class="col-left" style="justify-content:center;gap:14px;">
+    <div style="width:100%;">
+      <div class="task-bar">
+        <input class="task-input" id="task-input" type="text" placeholder="NEW TASK..." maxlength="40" onkeydown="if(event.key==='Enter')addTask()">
+        <button class="task-add" onclick="addTask()">ADD</button>
+      </div>
+    </div>
+    <div style="width:100%;border:1px solid var(--dim-border);padding:12px;">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--dim);margin-bottom:10px;">STATS</div>
+      <div style="font-family:'VT323',monospace;font-size:22px;" id="task-stats-done">0 DONE</div>
+      <div style="font-family:'VT323',monospace;font-size:22px;" id="task-stats-pending">3 PENDING</div>
+    </div>
   </div>
-  <div class="task-list" id="task-list"></div>
+  <div class="col-right" style="justify-content:flex-start;">
+    <div class="task-list" id="task-list" style="width:100%;flex:1;overflow-y:auto;"></div>
+  </div>
 </div>

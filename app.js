@@ -21,7 +21,6 @@ function initApp() {
   setInterval(simBattery, 5000);
 }
 
-// ── Helpers ──────────────────────────────────────────
 function el(id) { return document.getElementById(id); }
 
 // ── Clock ────────────────────────────────────────────
@@ -30,10 +29,10 @@ function tick() {
   const t = now.toTimeString().slice(0, 8);
   const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const dateStr = `${days[now.getDay()]} ${String(now.getDate()).padStart(2,'0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const d = `${days[now.getDay()]} ${String(now.getDate()).padStart(2,'0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
   if (el('hdr-clock')) el('hdr-clock').textContent = t;
   if (el('stat-time')) el('stat-time').textContent = t;
-  if (el('stat-date')) el('stat-date').textContent = dateStr;
+  if (el('stat-date')) el('stat-date').textContent = d;
   if (el('home-clock-sm')) el('home-clock-sm').textContent = t.slice(0,5);
 }
 
@@ -87,16 +86,9 @@ function selectStation(i) {
   document.querySelectorAll('.station').forEach((s, j) => s.classList.toggle('on', j === i));
   const wfEl = el('waveform');
   const statusEl = el('radio-status');
-  if (i === 2) {
-    if (statusEl) statusEl.textContent = '■ STATIC';
-    if (wfEl) wfEl.style.opacity = '0.15';
-  } else if (i === 3) {
-    if (statusEl) statusEl.textContent = '? UNKNOWN SOURCE';
-    if (wfEl) wfEl.style.opacity = '0.5';
-  } else {
-    if (statusEl) statusEl.textContent = '▶ NOW BROADCASTING';
-    if (wfEl) wfEl.style.opacity = '1';
-  }
+  if (i === 2) { if(statusEl) statusEl.textContent='■ STATIC'; if(wfEl) wfEl.style.opacity='0.15'; }
+  else if (i === 3) { if(statusEl) statusEl.textContent='? UNKNOWN SOURCE'; if(wfEl) wfEl.style.opacity='0.5'; }
+  else { if(statusEl) statusEl.textContent='▶ NOW BROADCASTING'; if(wfEl) wfEl.style.opacity='1'; }
 }
 
 // ── Scan ─────────────────────────────────────────────
@@ -116,8 +108,10 @@ function doScan() {
   const beamH = el('scan-beam-h');
   const beamV = el('scan-beam-v');
   const out = el('scan-readout');
+  const idle = el('scan-idle');
   if (label) label.textContent = 'SCANNING...';
   if (out) { out.classList.remove('show'); out.innerHTML = ''; }
+  if (idle) idle.style.display = 'none';
   if (beamH) { beamH.classList.remove('on'); void beamH.offsetWidth; beamH.classList.add('on'); }
   if (beamV) { beamV.classList.remove('on'); void beamV.offsetWidth; beamV.classList.add('on'); }
   setTimeout(() => {
@@ -183,6 +177,10 @@ function renderTasks() {
     list.appendChild(div);
   });
   updateHomeTasks();
+  const done = tasks.filter(t => t.done).length;
+  const pending = tasks.filter(t => !t.done).length;
+  if (el('task-stats-done')) el('task-stats-done').textContent = done + ' DONE';
+  if (el('task-stats-pending')) el('task-stats-pending').textContent = pending + ' PENDING';
 }
 
 function toggleTask(i) { tasks[i].done = !tasks[i].done; renderTasks(); }
@@ -203,6 +201,8 @@ function updateHomeTasks() {
 
 // ── Calculator ───────────────────────────────────────
 let cs = { val: '0', expr: '', op: null, prev: null, reset: false };
+let calcHistoryLog = [];
+
 function calcDisplay() {
   const v = cs.val;
   if (el('calc-val')) el('calc-val').textContent = v.length > 10 ? parseFloat(v).toExponential(2) : v;
@@ -222,7 +222,11 @@ function co(op) {
   else if (op === '=') {
     if (cs.op && cs.prev !== null) {
       const r = compute(cs.prev, cur, cs.op);
-      cs.expr = `${cs.prev} ${cs.op} ${cur} =`;
+      const entry = `${cs.prev} ${cs.op} ${cur} = ${r}`;
+      calcHistoryLog.unshift(entry);
+      if (calcHistoryLog.length > 4) calcHistoryLog.pop();
+      if (el('calc-history')) el('calc-history').innerHTML = calcHistoryLog.map(h => `<div style="opacity:0.6">${h}</div>`).join('');
+      cs.expr = entry;
       cs.val = String(r); cs.op = null; cs.prev = null; cs.reset = true;
     }
   } else {

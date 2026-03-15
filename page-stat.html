@@ -1,15 +1,24 @@
 <div class="page-title">STATUS</div>
-<div class="stat-wrap">
-  <div class="big-clock" id="stat-time">--:--:--</div>
-  <div class="stat-date" id="stat-date">--- -- ----</div>
-  <div class="stat-row">
-    <div class="stat-box"><div class="sb-val" id="stat-bat">87%</div><div class="sb-label">BATTERY</div></div>
-    <div class="stat-box"><div class="sb-val">22°C</div><div class="sb-label">TEMP</div></div>
-    <div class="stat-box"><div class="sb-val">0 RAD</div><div class="sb-label">RADIATION</div></div>
+<div class="two-col">
+  <div class="col-left">
+    <div class="big-clock" id="stat-time">--:--:--</div>
+    <div class="stat-date" id="stat-date">--- -- ----</div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="sb-val" id="stat-bat">87%</div><div class="sb-label">BATTERY</div></div>
+      <div class="stat-box"><div class="sb-val">22°C</div><div class="sb-label">TEMP</div></div>
+      <div class="stat-box"><div class="sb-val">0 RAD</div><div class="sb-label">RADIATION</div></div>
+    </div>
   </div>
-  <div class="bar-group">
-    <div class="bar-item"><div class="bar-head"><span>HP</span><span>87/100</span></div><div class="bar-track"><div class="bar-fill" style="width:87%"></div></div></div>
-    <div class="bar-item"><div class="bar-head"><span>AP</span><span>62/100</span></div><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div></div>
-    <div class="bar-item"><div class="bar-head"><span>PWR</span><span>94/100</span></div><div class="bar-track"><div class="bar-fill" style="width:94%"></div></div></div>
+  <div class="col-right">
+    <div class="panel-box" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+      <div class="panel-label">VITALS</div>
+      <div class="bar-group">
+        <div class="bar-item"><div class="bar-head"><span>HP</span><span>87/100</span></div><div class="bar-track"><div class="bar-fill" style="width:87%"></div></div></div>
+        <div class="bar-item"><div class="bar-head"><span>AP</span><span>62/100</span></div><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div></div>
+        <div class="bar-item"><div class="bar-head"><span>PWR</span><span>94/100</span></div><div class="bar-track"><div class="bar-fill" style="width:94%"></div></div></div>
+        <div class="bar-item"><div class="bar-head"><span>SIGNAL</span><span>98/100</span></div><div class="bar-track"><div class="bar-fill" style="width:98%"></div></div></div>
+        <div class="bar-item"><div class="bar-head"><span>ARMOR</span><span>45/100</span></div><div class="bar-track"><div class="bar-fill" style="width:45%"></div></div></div>
+      </div>
+    </div>
   </div>
 </div>

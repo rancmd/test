@@ -1,28 +1,36 @@
 <div class="page-title">CALCULATOR</div>
-<div class="calc-wrap">
-  <div class="calc-screen">
-    <div class="calc-expr" id="calc-expr"></div>
-    <div class="calc-val" id="calc-val">0</div>
+<div class="two-col">
+  <div class="col-left" style="justify-content:center;">
+    <div class="calc-screen" style="width:100%;">
+      <div class="calc-expr" id="calc-expr"></div>
+      <div class="calc-val" id="calc-val">0</div>
+    </div>
+    <div style="width:100%;border:1px solid var(--dim-border);padding:12px;margin-top:8px;">
+      <div style="font-size:10px;letter-spacing:3px;color:var(--dim);margin-bottom:8px;">HISTORY</div>
+      <div id="calc-history" style="font-size:12px;color:var(--dim);line-height:2;min-height:60px;"></div>
+    </div>
   </div>
-  <div class="calc-grid">
-    <button class="cb op" onclick="co('C')">C</button>
-    <button class="cb op" onclick="co('+/-')">±</button>
-    <button class="cb op" onclick="co('%')">%</button>
-    <button class="cb op eq" onclick="co('/')">÷</button>
-    <button class="cb" onclick="cn('7')">7</button>
-    <button class="cb" onclick="cn('8')">8</button>
-    <button class="cb" onclick="cn('9')">9</button>
-    <button class="cb op" onclick="co('*')">×</button>
-    <button class="cb" onclick="cn('4')">4</button>
-    <button class="cb" onclick="cn('5')">5</button>
-    <button class="cb" onclick="cn('6')">6</button>
-    <button class="cb op" onclick="co('-')">−</button>
-    <button class="cb" onclick="cn('1')">1</button>
-    <button class="cb" onclick="cn('2')">2</button>
-    <button class="cb" onclick="cn('3')">3</button>
-    <button class="cb op" onclick="co('+')">+</button>
-    <button class="cb wide" onclick="cn('0')">0</button>
-    <button class="cb" onclick="cn('.')">.</button>
-    <button class="cb eq" onclick="co('=')">=</button>
+  <div class="col-right" style="justify-content:center;">
+    <div class="calc-grid" style="width:100%;flex:1;">
+      <button class="cb op" onclick="co('C')">C</button>
+      <button class="cb op" onclick="co('+/-')">±</button>
+      <button class="cb op" onclick="co('%')">%</button>
+      <button class="cb op eq" onclick="co('/')">÷</button>
+      <button class="cb" onclick="cn('7')">7</button>
+      <button class="cb" onclick="cn('8')">8</button>
+      <button class="cb" onclick="cn('9')">9</button>
+      <button class="cb op" onclick="co('*')">×</button>
+      <button class="cb" onclick="cn('4')">4</button>
+      <button class="cb" onclick="cn('5')">5</button>
+      <button class="cb" onclick="cn('6')">6</button>
+      <button class="cb op" onclick="co('-')">−</button>
+      <button class="cb" onclick="cn('1')">1</button>
+      <button class="cb" onclick="cn('2')">2</button>
+      <button class="cb" onclick="cn('3')">3</button>
+      <button class="cb op" onclick="co('+')">+</button>
+      <button class="cb wide" onclick="cn('0')">0</button>
+      <button class="cb" onclick="cn('.')">.</button>
+      <button class="cb eq" onclick="co('=')">=</button>
+    </div>
   </div>
 </div>
