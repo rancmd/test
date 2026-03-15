@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PIP-DASH</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --dim: #888;
+    --border: #444;
+    --active: #fff;
+    --inactive: #555;
+    --scanline: rgba(255,255,255,0.03);
+    --glow: 0 0 8px rgba(255,255,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Share Tech Mono', monospace;
+    min-height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* CRT overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      var(--scanline) 2px,
+      var(--scanline) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* Header */
+  .header {
+    padding: 12px 16px 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-title {
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    letter-spacing: 4px;
+    text-shadow: var(--glow);
+    animation: flicker 8s infinite;
+  }
+
+  .header-status {
+    font-size: 11px;
+    color: var(--dim);
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--fg);
+    border-radius: 50%;
+    margin-right: 4px;
+    animation: blink 1.5s infinite;
+  }
+
+  /* Tab bar */
+  .tabbar {
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tabbar::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--inactive);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .tab.active {
+    color: var(--active);
+    border-bottom-color: var(--active);
+    text-shadow: var(--glow);
+  }
+  .tab:active { opacity: 0.6; }
+
+  /* Pages */
+  .page { display: none; padding: 20px 16px; animation: pagein 0.2s ease; }
+  .page.active { display: block; }
+
+  /* Section label */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--dim);
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Cards */
+  .card {
+    border: 1px solid var(--border);
+    padding: 14px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .card-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    margin-bottom: 6px;
+  }
+  .card-value {
+    font-family: 'VT323', monospace;
+    font-size: 32px;
+    text-shadow: var(--glow);
+  }
+  .card-sub {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 4px;
+  }
+
+  /* Grid 2col */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+  /* Bar */
+  .bar-wrap { margin: 8px 0; }
+  .bar-label { font-size: 10px; color: var(--dim); letter-spacing: 1px; margin-bottom: 3px; display: flex; justify-content: space-between; }
+  .bar-track { height: 6px; background: #222; border: 1px solid var(--border); }
+  .bar-fill { height: 100%; background: var(--fg); transition: width 1s ease; }
+
+  /* HOME mini widgets */
+  .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mini-card {
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .mini-card:active { border-color: var(--fg); }
+  .mini-card .mc-label { font-size: 9px; letter-spacing: 2px; color: var(--dim); margin-bottom: 4px; }
+  .mini-card .mc-val { font-family: 'VT323', monospace; font-size: 22px; }
+  .mini-card .mc-sub { font-size: 10px; color: var(--dim); margin-top: 2px; }
+
+  /* SCAN page */
+  .scan-area {
+    border: 1px solid var(--border);
+    padding: 30px 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .scan-area:active { background: #111; }
+  .scan-icon {
+    font-family: 'VT323', monospace;
+    font-size: 48px;
+    text-shadow: var(--glow);
+    animation: flicker 4s infinite;
+  }
+  .scan-prompt { font-size: 11px; letter-spacing: 2px; color: var(--dim); }
+
+  .scan-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: rgba(255,255,255,0.5);
+    top: 0;
+    display: none;
+  }
+  .scan-line.scanning {
+    display: block;
+    animation: scandown 1.5s linear forwards;
+  }
+
+  .scan-result {
+    border: 1px solid var(--border);
+    padding: 14px;
+    font-size: 12px;
+    line-height: 1.8;
+    min-height: 100px;
+    display: none;
+  }
+  .scan-result.visible { display: block; }
+  .scan-result .result-line { opacity: 0; animation: fadein 0.3s forwards; }
+
+  /* VAULT */
+  .vault-btn {
+    width: 100%;
+    padding: 16px;
+    background: none;
+    border: 1px solid var(--fg);
+    color: var(--fg);
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    text-shadow: var(--glow);
+    transition: all 0.15s;
+  }
+  .vault-btn:active { background: #111; letter-spacing: 6px; }
+
+  .vault-result {
+    border: 1px solid var(--border);
+    padding: 14px;
+    min-height: 120px;
+    font-size: 13px;
+    line-height: 1.8;
+    position: relative;
+  }
+  .vault-header {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+  .vault-text { color: var(--fg); }
+  .vault-id { font-size: 10px; color: var(--dim); margin-top: 10px; }
+
+  /* RADIO */
+  .radio-display {
+    border: 1px solid var(--border);
+    padding: 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .radio-freq {
+    font-family: 'VT323', monospace;
+    font-size: 42px;
+    text-shadow: var(--glow);
+    letter-spacing: 2px;
+  }
+  .radio-name { font-size: 12px; letter-spacing: 2px; margin-top: 4px; color: var(--dim); }
+  .radio-status { font-size: 11px; color: var(--dim); margin-top: 8px; }
+
+  .waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 40px;
+    margin: 12px 0;
+  }
+  .wave-bar {
+    width: 4px;
+    background: var(--fg);
+    border-radius: 2px;
+    animation: wave 0.8s ease-in-out infinite alternate;
+  }
+
+  .station-list { display: flex; flex-direction: column; gap: 8px; }
+  .station {
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .station:active, .station.playing { border-color: var(--fg); }
+  .station.playing .station-name { text-shadow: var(--glow); }
+  .station-name { font-size: 12px; letter-spacing: 1px; }
+  .station-freq { font-family: 'VT323', monospace; font-size: 18px; color: var(--dim); }
+  .playing-indicator { font-size: 10px; color: var(--fg); letter-spacing: 1px; }
+
+  /* TASKS */
+  .task-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .task-input {
+    flex: 1;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .task-input:focus { border-color: var(--fg); }
+  .task-add-btn {
+    background: none;
+    border: 1px solid var(--fg);
+    color: var(--fg);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    padding: 4px 14px;
+    cursor: pointer;
+    letter-spacing: 2px;
+  }
+  .task-add-btn:active { background: #111; }
+
+  .task-list { display: flex; flex-direction: column; gap: 6px; }
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .task-item.done { border-color: #333; }
+  .task-item.done .task-text { color: var(--dim); text-decoration: line-through; }
+  .task-check {
+    width: 14px; height: 14px;
+    border: 1px solid var(--fg);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+  }
+  .task-item.done .task-check { background: var(--fg); color: var(--bg); }
+  .task-text { font-size: 13px; flex: 1; }
+  .task-del { font-size: 16px; color: var(--dim); padding: 0 4px; }
+
+  /* CALC */
+  .calc-display {
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    text-align: right;
+  }
+  .calc-expr { font-size: 11px; color: var(--dim); min-height: 16px; letter-spacing: 1px; }
+  .calc-value { font-family: 'VT323', monospace; font-size: 44px; text-shadow: var(--glow); }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .calc-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    padding: 14px 4px;
+    cursor: pointer;
+    transition: all 0.1s;
+    letter-spacing: 1px;
+  }
+  .calc-btn:active { background: #fff; color: #000; }
+  .calc-btn.op { color: var(--dim); border-color: #333; }
+  .calc-btn.op:active { background: #fff; color: #000; }
+  .calc-btn.wide { grid-column: span 2; }
+  .calc-btn.eq { border-color: var(--fg); color: var(--fg); text-shadow: var(--glow); }
+
+  /* MAP */
+  .compass-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 20px 0;
+  }
+  .compass {
+    width: 160px; height: 160px;
+    border: 2px solid var(--fg);
+    border-radius: 50%;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--glow), inset 0 0 20px rgba(255,255,255,0.05);
+  }
+  .compass-dir {
+    position: absolute;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+  }
+  .compass-dir.n { top: 8px; left: 50%; transform: translateX(-50%); text-shadow: var(--glow); }
+  .compass-dir.s { bottom: 8px; left: 50%; transform: translateX(-50%); color: var(--dim); }
+  .compass-dir.e { right: 10px; top: 50%; transform: translateY(-50%); color: var(--dim); }
+  .compass-dir.w { left: 10px; top: 50%; transform: translateY(-50%); color: var(--dim); }
+  .compass-needle {
+    width: 2px; height: 60px;
+    background: linear-gradient(to bottom, var(--fg) 50%, var(--dim) 50%);
+    position: absolute;
+    transform-origin: center bottom;
+    transform: rotate(var(--bearing, 0deg)) translateY(-30px);
+    transition: transform 1s ease;
+    top: 20px;
+  }
+  .compass-center {
+    width: 8px; height: 8px;
+    background: var(--fg);
+    border-radius: 50%;
+    z-index: 1;
+    box-shadow: var(--glow);
+  }
+  .compass-tick {
+    position: absolute;
+    width: 1px; height: 8px;
+    background: var(--dim);
+    transform-origin: center 80px;
+  }
+
+  .map-coords {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .map-grid {
+    border: 1px solid var(--border);
+    padding: 12px;
+    font-size: 11px;
+    line-height: 2;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    color: var(--dim);
+    overflow: hidden;
+    height: 100px;
+    text-align: center;
+    position: relative;
+  }
+  .map-dot {
+    position: absolute;
+    width: 6px; height: 6px;
+    background: var(--fg);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: var(--glow);
+    animation: pulse 2s infinite;
+  }
+
+  /* Animations */
+  @keyframes flicker {
+    0%,95%,100% { opacity: 1; }
+    96% { opacity: 0.7; }
+    97% { opacity: 1; }
+    98% { opacity: 0.5; }
+    99% { opacity: 1; }
+  }
+  @keyframes blink {
+    0%,49% { opacity: 1; }
+    50%,100% { opacity: 0; }
+  }
+  @keyframes pagein {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scandown {
+    from { top: 0; }
+    to { top: 100%; }
+  }
+  @keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes wave {
+    from { transform: scaleY(0.3); }
+    to { transform: scaleY(1); }
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 4px rgba(255,255,255,0.8); }
+    50% { box-shadow: 0 0 12px rgba(255,255,255,1); }
+  }
+  @keyframes glitch {
+    0%,100% { transform: translateX(0); }
+    10% { transform: translateX(-2px); }
+    20% { transform: translateX(2px); }
+    30% { transform: translateX(0); }
+  }
+
+  .glitch { animation: glitch 0.3s ease; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">PIP-DASH</div>
+  <div class="header-status">
+    <span class="status-dot"></span>ONLINE<br>
+    <span id="hdr-time">--:--:--</span>
+  </div>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab active" onclick="showPage('home',this)">HOME</button>
+  <button class="tab" onclick="showPage('stat',this)">STAT</button>
+  <button class="tab" onclick="showPage('scan',this)">SCAN</button>
+  <button class="tab" onclick="showPage('vault',this)">VAULT</button>
+  <button class="tab" onclick="showPage('radio',this)">RADIO</button>
+  <button class="tab" onclick="showPage('tasks',this)">TASKS</button>
+  <button class="tab" onclick="showPage('calc',this)">CALC</button>
+  <button class="tab" onclick="showPage('map',this)">MAP</button>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="section-label">// SYSTEM OVERVIEW</div>
+  <div class="home-grid">
+    <div class="mini-card" onclick="showPage('stat', getTab('STAT'))">
+      <div class="mc-label">BATTERY</div>
+      <div class="mc-val" id="home-bat">87%</div>
+      <div class="mc-sub">STABLE</div>
+    </div>
+    <div class="mini-card" onclick="showPage('stat', getTab('STAT'))">
+      <div class="mc-label">SIGNAL</div>
+      <div class="mc-val">▊▊▊▊▊</div>
+      <div class="mc-sub">STRONG</div>
+    </div>
+    <div class="mini-card" onclick="showPage('stat', getTab('STAT'))">
+      <div class="mc-label">TEMP</div>
+      <div class="mc-val">22°C</div>
+      <div class="mc-sub">NOMINAL</div>
+    </div>
+    <div class="mini-card" onclick="showPage('radio', getTab('RADIO'))">
+      <div class="mc-label">RADIO</div>
+      <div class="mc-val" id="home-radio">101.1</div>
+      <div class="mc-sub" id="home-radio-name">WASTELAND FM</div>
+    </div>
+    <div class="mini-card" onclick="showPage('tasks', getTab('TASKS'))">
+      <div class="mc-label">TASKS</div>
+      <div class="mc-val" id="home-tasks">0/3</div>
+      <div class="mc-sub">PENDING</div>
+    </div>
+    <div class="mini-card" onclick="showPage('map', getTab('MAP'))">
+      <div class="mc-label">LOCATION</div>
+      <div class="mc-val">32°N</div>
+      <div class="mc-sub">TEL AVIV</div>
+    </div>
+  </div>
+  <div style="margin-top:16px; border:1px solid var(--border); padding:12px;">
+    <div class="section-label" style="margin-bottom:8px;">// SYSTEM LOG</div>
+    <div style="font-size:11px; color:var(--dim); line-height:2;">
+      <div>> BOOT SEQUENCE COMPLETE</div>
+      <div>> ALL MODULES LOADED</div>
+      <div>> SIGNAL LOCK ACQUIRED</div>
+      <div id="log-time">> TIMESTAMP: --:--:--</div>
+    </div>
+  </div>
+</div>
+
+<!-- STAT -->
+<div class="page" id="page-stat">
+  <div class="section-label">// SYSTEM STATUS</div>
+  <div class="card">
+    <div class="card-label">LOCAL TIME</div>
+    <div class="card-value" id="stat-time">--:--:--</div>
+    <div class="card-sub" id="stat-date">--- -- ----</div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-label">BATTERY</div>
+      <div class="card-value" id="stat-bat">87%</div>
+    </div>
+    <div class="card">
+      <div class="card-label">TEMP</div>
+      <div class="card-value">22°C</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-label">RADIATION</div>
+      <div class="card-value">0 RAD</div>
+    </div>
+    <div class="card">
+      <div class="card-label">SIGNAL</div>
+      <div class="card-value">98%</div>
+    </div>
+  </div>
+  <div style="border:1px solid var(--border); padding:14px;">
+    <div class="section-label" style="margin-bottom:10px;">// VITALS</div>
+    <div class="bar-wrap">
+      <div class="bar-label"><span>HP</span><span>87/100</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:87%"></div></div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label"><span>AP</span><span>62/100</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:62%"></div></div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label"><span>PWR</span><span>94/100</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:94%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- SCAN -->
+<div class="page" id="page-scan">
+  <div class="section-label">// ENVIRONMENT SCANNER</div>
+  <div class="scan-area" id="scan-area" onclick="doScan()">
+    <div class="scan-line" id="scan-line"></div>
+    <div class="scan-icon">⊕</div>
+    <div class="scan-prompt" id="scan-prompt">TAP TO INITIATE SCAN</div>
+  </div>
+  <div class="scan-result" id="scan-result"></div>
+</div>
+
+<!-- VAULT -->
+<div class="page" id="page-vault">
+  <div class="section-label">// CLASSIFIED ARCHIVE</div>
+  <button class="vault-btn" onclick="retrieveVault()">[ RETRIEVE RECORD ]</button>
+  <div class="vault-result" id="vault-result">
+    <div class="vault-header">AWAITING RETRIEVAL REQUEST...</div>
+    <div class="vault-text" style="color:var(--dim); font-size:11px;">Press button to access classified data.</div>
+  </div>
+</div>
+
+<!-- RADIO -->
+<div class="page" id="page-radio">
+  <div class="section-label">// COMMUNICATIONS</div>
+  <div class="radio-display">
+    <div class="radio-freq" id="radio-freq">101.1 FM</div>
+    <div class="radio-name" id="radio-name">WASTELAND FM</div>
+    <div class="waveform" id="waveform">
+    </div>
+    <div class="radio-status" id="radio-status">▶ NOW PLAYING</div>
+  </div>
+  <div class="station-list">
+    <div class="station playing" id="station-0" onclick="selectStation(0)">
+      <div class="station-name">WASTELAND FM</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="playing-indicator" id="ind-0">◉ ON AIR</div>
+        <div class="station-freq">101.1</div>
+      </div>
+    </div>
+    <div class="station" id="station-1" onclick="selectStation(1)">
+      <div class="station-name">VAULT RADIO</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="playing-indicator" id="ind-1" style="display:none!important">◉ ON AIR</div>
+        <div class="station-freq">88.3</div>
+      </div>
+    </div>
+    <div class="station" id="station-2" onclick="selectStation(2)">
+      <div class="station-name">DEAD AIR</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="playing-indicator" id="ind-2" style="display:none!important">◉ ON AIR</div>
+        <div class="station-freq">66.6</div>
+      </div>
+    </div>
+    <div class="station" id="station-3" onclick="selectStation(3)">
+      <div class="station-name">SIGNAL UNKNOWN</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="playing-indicator" id="ind-3" style="display:none!important">◉ ON AIR</div>
+        <div class="station-freq">???</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TASKS -->
+<div class="page" id="page-tasks">
+  <div class="section-label">// TASK LOG</div>
+  <div class="task-input-row">
+    <input class="task-input" id="task-input" type="text" placeholder="NEW TASK..." maxlength="40"
+      onkeydown="if(event.key==='Enter')addTask()">
+    <button class="task-add-btn" onclick="addTask()">ADD</button>
+  </div>
+  <div class="task-list" id="task-list"></div>
+</div>
+
+<!-- CALC -->
+<div class="page" id="page-calc">
+  <div class="section-label">// CALCULATOR</div>
+  <div class="calc-display">
+    <div class="calc-expr" id="calc-expr"></div>
+    <div class="calc-value" id="calc-val">0</div>
+  </div>
+  <div class="calc-grid">
+    <button class="calc-btn op" onclick="calcOp('C')">C</button>
+    <button class="calc-btn op" onclick="calcOp('+/-')">&plusmn;</button>
+    <button class="calc-btn op" onclick="calcOp('%')">%</button>
+    <button class="calc-btn op eq" onclick="calcOp('/')">÷</button>
+
+    <button class="calc-btn" onclick="calcNum('7')">7</button>
+    <button class="calc-btn" onclick="calcNum('8')">8</button>
+    <button class="calc-btn" onclick="calcNum('9')">9</button>
+    <button class="calc-btn op" onclick="calcOp('*')">×</button>
+
+    <button class="calc-btn" onclick="calcNum('4')">4</button>
+    <button class="calc-btn" onclick="calcNum('5')">5</button>
+    <button class="calc-btn" onclick="calcNum('6')">6</button>
+    <button class="calc-btn op" onclick="calcOp('-')">−</button>
+
+    <button class="calc-btn" onclick="calcNum('1')">1</button>
+    <button class="calc-btn" onclick="calcNum('2')">2</button>
+    <button class="calc-btn" onclick="calcNum('3')">3</button>
+    <button class="calc-btn op" onclick="calcOp('+')">+</button>
+
+    <button class="calc-btn wide" onclick="calcNum('0')">0</button>
+    <button class="calc-btn" onclick="calcNum('.')">.</button>
+    <button class="calc-btn eq" onclick="calcOp('=')">=</button>
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="page" id="page-map">
+  <div class="section-label">// NAVIGATION</div>
+  <div class="compass-wrap">
+    <div class="compass" id="compass">
+      <span class="compass-dir n">N</span>
+      <span class="compass-dir s">S</span>
+      <span class="compass-dir e">E</span>
+      <span class="compass-dir w">W</span>
+      <div class="compass-needle" id="needle"></div>
+      <div class="compass-center"></div>
+    </div>
+  </div>
+  <div class="map-coords">
+    <div class="card">
+      <div class="card-label">LATITUDE</div>
+      <div class="card-value" style="font-size:22px;">32.07°N</div>
+    </div>
+    <div class="card">
+      <div class="card-label">LONGITUDE</div>
+      <div class="card-value" style="font-size:22px;">34.78°E</div>
+    </div>
+  </div>
+  <div class="map-grid">
+    <div class="map-dot"></div>
+    . . . . . . . . . . . .<br>
+    . . . . . . . . . . . .<br>
+    . . . . . . . . . . . .<br>
+    . . . . . . . . . . . .
+  </div>
+  <div style="border:1px solid var(--border); padding:12px; margin-top:10px; font-size:11px; line-height:2; color:var(--dim);">
+    <div>ZONE: TEL AVIV SECTOR 4</div>
+    <div>ELEVATION: 5M ASL</div>
+    <div>THREAT LEVEL: <span style="color:var(--fg)">LOW</span></div>
+    <div>NEAREST SHELTER: 0.4 KM</div>
+  </div>
+</div>
+
+<script>
+// ── Clock ──────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  const t = now.toTimeString().slice(0,8);
+  const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const d = `${days[now.getDay()]} ${String(now.getDate()).padStart(2,'0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('hdr-time').textContent = t;
+  document.getElementById('stat-time').textContent = t;
+  document.getElementById('stat-date').textContent = d;
+  document.getElementById('log-time').textContent = `> TIMESTAMP: ${t}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── Battery sim ────────────────────────────────────────
+let bat = 87;
+setInterval(() => {
+  bat = Math.max(10, Math.min(99, bat + (Math.random() > 0.5 ? 1 : -1)));
+  document.getElementById('stat-bat').textContent = bat + '%';
+  document.getElementById('home-bat').textContent = bat + '%';
+}, 5000);
+
+// ── Navigation ─────────────────────────────────────────
+function getTab(name) {
+  return [...document.querySelectorAll('.tab')].find(t => t.textContent === name);
+}
+function showPage(id, tabEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (tabEl) tabEl.classList.add('active');
+  updateHomeTasks();
+}
+
+// ── Waveform build ─────────────────────────────────────
+const wf = document.getElementById('waveform');
+for (let i = 0; i < 24; i++) {
+  const b = document.createElement('div');
+  b.className = 'wave-bar';
+  b.style.height = (Math.random() * 28 + 6) + 'px';
+  b.style.animationDelay = (Math.random() * 0.8) + 's';
+  b.style.animationDuration = (0.4 + Math.random() * 0.6) + 's';
+  wf.appendChild(b);
+}
+
+// ── Radio ──────────────────────────────────────────────
+const stations = [
+  { name: 'WASTELAND FM', freq: '101.1 FM' },
+  { name: 'VAULT RADIO', freq: '88.3 FM' },
+  { name: 'DEAD AIR', freq: '66.6 FM' },
+  { name: 'SIGNAL UNKNOWN', freq: '???.? FM' },
+];
+let curStation = 0;
+
+function selectStation(i) {
+  curStation = i;
+  document.getElementById('radio-freq').textContent = stations[i].freq;
+  document.getElementById('radio-name').textContent = stations[i].name;
+  document.getElementById('home-radio').textContent = stations[i].freq.split(' ')[0];
+  document.getElementById('home-radio-name').textContent = stations[i].name;
+  stations.forEach((_,j) => {
+    document.getElementById('station-' + j).classList.toggle('playing', j === i);
+    document.getElementById('ind-' + j).style.display = j === i ? '' : 'none';
+  });
+  if (i === 2) {
+    document.getElementById('radio-status').textContent = '■ STATIC';
+    wf.style.opacity = '0.3';
+  } else if (i === 3) {
+    document.getElementById('radio-status').textContent = '? UNKNOWN SOURCE';
+    wf.style.opacity = '0.6';
+  } else {
+    document.getElementById('radio-status').textContent = '▶ NOW PLAYING';
+    wf.style.opacity = '1';
+  }
+}
+
+// ── SCAN ───────────────────────────────────────────────
+const scanData = [
+  ['ENTITY DETECTED: HUMANOID', 'THREAT LEVEL: NON-HOSTILE', 'DISTANCE: 12.4M', 'HEALTH: UNKNOWN', 'STATUS: MOVING NE'],
+  ['STRUCTURE ANALYSIS: CONCRETE', 'AGE ESTIMATE: 47 YEARS', 'INTEGRITY: 62%', 'RADIATION: TRACE', 'NOTABLE: NONE'],
+  ['ATMOSPHERIC READING COMPLETE', 'O2: 20.9%', 'CO2: 0.04%', 'TEMP: 22°C', 'HUMIDITY: 68%'],
+  ['ANOMALY DETECTED', 'CLASSIFICATION: UNKNOWN', 'SIGNAL STRENGTH: WEAK', 'ORIGIN: ???', 'RECOMMEND: AVOID'],
+  ['ITEM SCAN: CONSUMABLE', 'TYPE: STIMPAK', 'CONDITION: GOOD', 'HP RESTORE: +25', 'STATUS: USABLE'],
+];
+
+let scanning = false;
+function doScan() {
+  if (scanning) return;
+  scanning = true;
+  const prompt = document.getElementById('scan-prompt');
+  const line = document.getElementById('scan-line');
+  const result = document.getElementById('scan-result');
+  prompt.textContent = 'SCANNING...';
+  line.classList.add('scanning');
+  result.classList.remove('visible');
+  result.innerHTML = '';
+  setTimeout(() => {
+    line.classList.remove('scanning');
+    const data = scanData[Math.floor(Math.random() * scanData.length)];
+    result.classList.add('visible');
+    data.forEach((row, i) => {
+      const d = document.createElement('div');
+      d.className = 'result-line';
+      d.style.animationDelay = (i * 0.15) + 's';
+      d.textContent = '> ' + row;
+      result.appendChild(d);
+    });
+    prompt.textContent = 'TAP TO SCAN AGAIN';
+    scanning = false;
+  }, 1600);
+}
+
+// ── VAULT ──────────────────────────────────────────────
+const vaultData = [
+  { id: 'FILE-0047', text: 'SUBJECT WAS LAST SEEN AT SECTOR 9. MOTIVE UNKNOWN. CASE STATUS: OPEN.' },
+  { id: 'FILE-0112', text: 'EXPERIMENT 112-B RESULTED IN UNEXPECTED COGNITIVE ENHANCEMENT. ALL RECORDS SEALED.' },
+  { id: 'FILE-0208', text: 'THE SIGNAL ORIGINATES FROM BELOW GROUND. DEPTH UNKNOWN. CREW SENT. NO RETURN.' },
+  { id: 'FILE-0333', text: 'VAULT 33 NEVER OPENED. POPULATION UNKNOWN. LAST PING RECEIVED: 14 YEARS AGO.' },
+  { id: 'FILE-0501', text: 'OPERATION CLEAN SWEEP WAS A SUCCESS. DETAILS REDACTED. AUTHORIZATION: LEVEL 5.' },
+  { id: 'FILE-0666', text: 'THE ANOMALY CANNOT BE EXPLAINED BY CURRENT SCIENCE. RECOMMEND IMMEDIATE QUARANTINE.' },
+  { id: 'FILE-0777', text: 'THREE SUBJECTS SURVIVED THE TEST. ONLY ONE REMEMBERS. LOCATION: CLASSIFIED.' },
+];
+let lastVault = -1;
+
+function retrieveVault() {
+  let i;
+  do { i = Math.floor(Math.random() * vaultData.length); } while (i === lastVault);
+  lastVault = i;
+  const r = document.getElementById('vault-result');
+  r.innerHTML = '<div class="vault-header">ACCESSING... PLEASE WAIT</div>';
+  setTimeout(() => {
+    r.classList.add('glitch');
+    setTimeout(() => r.classList.remove('glitch'), 300);
+    r.innerHTML = `
+      <div class="vault-header">RECORD RETRIEVED — EYES ONLY</div>
+      <div class="vault-text">${vaultData[i].text}</div>
+      <div class="vault-id">ID: ${vaultData[i].id} | CLEARANCE: LEVEL 3</div>
+    `;
+  }, 800);
+}
+
+// ── TASKS ──────────────────────────────────────────────
+let tasks = [
+  { text: 'CHECK PERIMETER', done: false },
+  { text: 'RESTOCK SUPPLIES', done: false },
+  { text: 'CONTACT BASE CAMP', done: true },
+];
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  list.innerHTML = '';
+  tasks.forEach((t, i) => {
+    const el = document.createElement('div');
+    el.className = 'task-item' + (t.done ? ' done' : '');
+    el.innerHTML = `
+      <div class="task-check" onclick="toggleTask(${i})">${t.done ? '✓' : ''}</div>
+      <div class="task-text" onclick="toggleTask(${i})">${t.text}</div>
+      <div class="task-del" onclick="deleteTask(${i})">✕</div>
+    `;
+    list.appendChild(el);
+  });
+  updateHomeTasks();
+}
+
+function toggleTask(i) { tasks[i].done = !tasks[i].done; renderTasks(); }
+function deleteTask(i) { tasks.splice(i, 1); renderTasks(); }
+function addTask() {
+  const inp = document.getElementById('task-input');
+  const val = inp.value.trim().toUpperCase();
+  if (!val) return;
+  tasks.unshift({ text: val, done: false });
+  inp.value = '';
+  renderTasks();
+}
+function updateHomeTasks() {
+  const done = tasks.filter(t => t.done).length;
+  const el = document.getElementById('home-tasks');
+  if (el) el.textContent = done + '/' + tasks.length;
+}
+
+renderTasks();
+
+// ── CALC ───────────────────────────────────────────────
+let calcState = { val: '0', expr: '', op: null, prev: null, reset: false };
+
+function calcDisplay() {
+  document.getElementById('calc-val').textContent = calcState.val.length > 9
+    ? parseFloat(calcState.val).toExponential(2)
+    : calcState.val;
+  document.getElementById('calc-expr').textContent = calcState.expr;
+}
+
+function calcNum(n) {
+  if (calcState.reset) { calcState.val = ''; calcState.reset = false; }
+  if (n === '.' && calcState.val.includes('.')) return;
+  if (calcState.val === '0' && n !== '.') calcState.val = n;
+  else calcState.val = (calcState.val + n).slice(0, 12);
+  calcDisplay();
+}
+
+function calcOp(op) {
+  const cur = parseFloat(calcState.val);
+  if (op === 'C') {
+    calcState = { val: '0', expr: '', op: null, prev: null, reset: false };
+  } else if (op === '+/-') {
+    calcState.val = String(-cur);
+  } else if (op === '%') {
+    calcState.val = String(cur / 100);
+  } else if (op === '=') {
+    if (calcState.op && calcState.prev !== null) {
+      const res = compute(calcState.prev, cur, calcState.op);
+      calcState.expr = `${calcState.prev} ${calcState.op} ${cur} =`;
+      calcState.val = String(res);
+      calcState.op = null; calcState.prev = null; calcState.reset = true;
+    }
+  } else {
+    if (calcState.op && calcState.prev !== null && !calcState.reset) {
+      const res = compute(calcState.prev, cur, calcState.op);
+      calcState.val = String(res);
+      calcState.prev = res;
+    } else {
+      calcState.prev = cur;
+    }
+    calcState.op = op;
+    calcState.expr = `${calcState.prev} ${op}`;
+    calcState.reset = true;
+  }
+  calcDisplay();
+}
+
+function compute(a, b, op) {
+  if (op === '+') return Math.round((a + b) * 1e10) / 1e10;
+  if (op === '-') return Math.round((a - b) * 1e10) / 1e10;
+  if (op === '*') return Math.round((a * b) * 1e10) / 1e10;
+  if (op === '/') return b === 0 ? 'ERR' : Math.round((a / b) * 1e10) / 1e10;
+}
+
+// ── COMPASS ───────────────────────────────────────────
+let bearing = 0;
+function rotateBearing() {
+  bearing = (bearing + Math.floor(Math.random() * 30 - 5) + 360) % 360;
+  document.getElementById('needle').style.setProperty('--bearing', bearing + 'deg');
+}
+setInterval(rotateBearing, 3000);
+</script>
+</body>
+</html>
