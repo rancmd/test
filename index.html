@@ -3,8 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
-<!-- PWA / Add to Home Screen -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="PIP-DASH">
@@ -12,28 +10,26 @@
 <meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-
 <title>PIP-DASH</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Pixel corner decorations -->
 <div class="pixel-corner tl"></div>
 <div class="pixel-corner tr"></div>
 <div class="pixel-corner bl"></div>
 <div class="pixel-corner br"></div>
 
-<!-- ── HEADER ── -->
+<!-- HEADER -->
 <div id="header">
   <div id="logo">PIP-DASH</div>
   <div id="header-right">
     <div class="hdr-stat"><div class="live-dot"></div> ONLINE</div>
     <div class="hdr-stat">
-      <svg width="18" height="10" viewBox="0 0 18 10" fill="none">
-        <rect x="0" y="1" width="15" height="8" stroke="white" stroke-width="1.5"/>
-        <rect x="15" y="3" width="3" height="4" fill="white"/>
-        <rect id="bat-fill" x="1.5" y="2.5" width="10" height="5" fill="white"/>
+      <svg width="20" height="11" viewBox="0 0 22 11" fill="none">
+        <rect x="0" y="1" width="18" height="9" stroke="white" stroke-width="1.5"/>
+        <rect x="18" y="3" width="4" height="5" fill="white"/>
+        <rect id="bat-fill" x="1.5" y="2.5" width="12" height="6" fill="white"/>
       </svg>
       <span id="hdr-bat-pct">87%</span>
     </div>
@@ -41,224 +37,54 @@
   </div>
 </div>
 
-<!-- ── TABBAR ── -->
+<!-- TABBAR -->
 <div id="tabbar">
   <button class="tab active" data-page="home" onclick="showPage('home')">
-    <svg width="18" height="16" viewBox="0 0 20 18" fill="white"><polygon points="10,1 1,9 3,9 3,17 8,17 8,12 12,12 12,17 17,17 17,9 19,9"/></svg>
+    <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><polygon points="10,1 1,9 3,9 3,17 8,17 8,12 12,12 12,17 17,17 17,9 19,9"/></svg>
     HOME
   </button>
   <button class="tab" data-page="stat" onclick="showPage('stat')">
-    <svg width="18" height="16" viewBox="0 0 20 18" fill="white"><rect x="1" y="10" width="4" height="7"/><rect x="8" y="6" width="4" height="11"/><rect x="15" y="2" width="4" height="15"/></svg>
+    <svg width="22" height="20" viewBox="0 0 20 18" fill="white"><rect x="1" y="10" width="4" height="7"/><rect x="8" y="6" width="4" height="11"/><rect x="15" y="2" width="4" height="15"/></svg>
     STAT
   </button>
   <button class="tab" data-page="scan" onclick="showPage('scan')">
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="5" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/><line x1="10" y1="1" x2="10" y2="4" stroke="white" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="19" stroke="white" stroke-width="1.5"/><line x1="1" y1="10" x2="4" y2="10" stroke="white" stroke-width="1.5"/><line x1="16" y1="10" x2="19" y2="10" stroke="white" stroke-width="1.5"/></svg>
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="5" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/><line x1="10" y1="1" x2="10" y2="4" stroke="white" stroke-width="1.5"/><line x1="10" y1="16" x2="10" y2="19" stroke="white" stroke-width="1.5"/><line x1="1" y1="10" x2="4" y2="10" stroke="white" stroke-width="1.5"/><line x1="16" y1="10" x2="19" y2="10" stroke="white" stroke-width="1.5"/></svg>
     SCAN
   </button>
   <button class="tab" data-page="vault" onclick="showPage('vault')">
-    <svg width="14" height="18" viewBox="0 0 16 20" fill="none"><rect x="1" y="8" width="14" height="11" stroke="white" stroke-width="1.5"/><path d="M4 8V5a4 4 0 0 1 8 0v3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="8" cy="13" r="2" fill="white"/><rect x="7" y="13" width="2" height="3" fill="white"/></svg>
+    <svg width="18" height="22" viewBox="0 0 16 20" fill="none"><rect x="1" y="8" width="14" height="11" stroke="white" stroke-width="1.5"/><path d="M4 8V5a4 4 0 0 1 8 0v3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="8" cy="13" r="2" fill="white"/><rect x="7" y="13" width="2" height="3" fill="white"/></svg>
     VAULT
   </button>
   <button class="tab" data-page="radio" onclick="showPage('radio')">
-    <svg width="20" height="16" viewBox="0 0 22 18" fill="none"><rect x="2" y="6" width="18" height="11" stroke="white" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="white"/><line x1="5" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/><line x1="17" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/></svg>
+    <svg width="24" height="20" viewBox="0 0 22 18" fill="none"><rect x="2" y="6" width="18" height="11" stroke="white" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="white"/><line x1="5" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/><line x1="17" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/></svg>
     RADIO
   </button>
   <button class="tab" data-page="tasks" onclick="showPage('tasks')">
-    <svg width="16" height="18" viewBox="0 0 18 20" fill="none"><rect x="1" y="1" width="16" height="18" stroke="white" stroke-width="1.5"/><line x1="5" y1="7" x2="13" y2="7" stroke="white" stroke-width="1.5"/><line x1="5" y1="11" x2="13" y2="11" stroke="white" stroke-width="1.5"/><line x1="5" y1="15" x2="10" y2="15" stroke="white" stroke-width="1.5"/></svg>
+    <svg width="20" height="22" viewBox="0 0 18 20" fill="none"><rect x="1" y="1" width="16" height="18" stroke="white" stroke-width="1.5"/><line x1="5" y1="7" x2="13" y2="7" stroke="white" stroke-width="1.5"/><line x1="5" y1="11" x2="13" y2="11" stroke="white" stroke-width="1.5"/><line x1="5" y1="15" x2="10" y2="15" stroke="white" stroke-width="1.5"/></svg>
     TASKS
   </button>
   <button class="tab" data-page="calc" onclick="showPage('calc')">
-    <svg width="14" height="18" viewBox="0 0 16 20" fill="none"><rect x="1" y="1" width="14" height="18" stroke="white" stroke-width="1.5"/><rect x="3" y="3" width="10" height="4" fill="white"/><rect x="3" y="10" width="3" height="2" fill="white"/><rect x="6.5" y="10" width="3" height="2" fill="white"/><rect x="10" y="10" width="3" height="2" fill="white"/><rect x="3" y="14" width="3" height="2" fill="white"/><rect x="6.5" y="14" width="3" height="2" fill="white"/><rect x="10" y="12" width="3" height="4" fill="white"/></svg>
+    <svg width="18" height="22" viewBox="0 0 16 20" fill="none"><rect x="1" y="1" width="14" height="18" stroke="white" stroke-width="1.5"/><rect x="3" y="3" width="10" height="4" fill="white"/><rect x="3" y="10" width="3" height="2" fill="white"/><rect x="6.5" y="10" width="3" height="2" fill="white"/><rect x="10" y="10" width="3" height="2" fill="white"/><rect x="3" y="14" width="3" height="2" fill="white"/><rect x="6.5" y="14" width="3" height="2" fill="white"/><rect x="10" y="12" width="3" height="4" fill="white"/></svg>
     CALC
   </button>
   <button class="tab" data-page="map" onclick="showPage('map')">
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><polygon points="10,3 12,10 10,8 8,10" fill="white"/><polygon points="10,17 12,10 10,12 8,10" fill="none" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/></svg>
+    <svg width="22" height="22" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><polygon points="10,3 12,10 10,8 8,10" fill="white"/><polygon points="10,17 12,10 10,12 8,10" fill="none" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/></svg>
     MAP
   </button>
 </div>
 
-<!-- ── CONTENT ── -->
+<!-- CONTENT: pages loaded dynamically -->
 <div id="content">
+  <div class="page active" id="page-home"></div>
+  <div class="page" id="page-stat"></div>
+  <div class="page" id="page-scan"></div>
+  <div class="page" id="page-vault"></div>
+  <div class="page" id="page-radio"></div>
+  <div class="page" id="page-tasks"></div>
+  <div class="page" id="page-calc"></div>
+  <div class="page" id="page-map"></div>
+</div>
 
-  <!-- HOME -->
-  <div class="page active" id="page-home">
-    <div class="home-grid">
-      <div class="home-card" onclick="showPage('stat')">
-        <svg width="22" height="12" viewBox="0 0 22 12" fill="none"><rect x="0" y="2" width="18" height="8" stroke="white" stroke-width="1.5"/><rect x="18" y="4" width="4" height="4" fill="white"/><rect id="hc-bat" x="1.5" y="3.5" width="12" height="5" fill="white"/></svg>
-        <div class="hc-val" id="home-bat">87%</div>
-        <div class="hc-label">BATTERY</div>
-      </div>
-      <div class="home-card" onclick="showPage('stat')">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><line x1="10" y1="5" x2="10" y2="10" stroke="white" stroke-width="1.5" stroke-linecap="square"/><line x1="10" y1="10" x2="14" y2="10" stroke="white" stroke-width="1.5" stroke-linecap="square"/></svg>
-        <div class="hc-val" id="home-clock-sm">--:--</div>
-        <div class="hc-label">TIME</div>
-      </div>
-      <div class="home-card" onclick="showPage('scan')">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><circle cx="10" cy="10" r="4" stroke="white" stroke-width="1"/><circle cx="10" cy="10" r="1.5" fill="white"/></svg>
-        <div class="hc-val">SCAN</div>
-        <div class="hc-label">SCANNER</div>
-      </div>
-      <div class="home-card" onclick="showPage('vault')">
-        <svg width="14" height="18" viewBox="0 0 16 20" fill="none"><rect x="1" y="8" width="14" height="11" stroke="white" stroke-width="1.5"/><path d="M4 8V5a4 4 0 0 1 8 0v3" stroke="white" stroke-width="1.5" fill="none"/><circle cx="8" cy="13" r="2" fill="white"/></svg>
-        <div class="hc-val">7</div>
-        <div class="hc-label">VAULT</div>
-      </div>
-      <div class="home-card" onclick="showPage('radio')">
-        <svg width="20" height="16" viewBox="0 0 22 18" fill="none"><rect x="2" y="6" width="18" height="11" stroke="white" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="white"/><line x1="5" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/><line x1="17" y1="6" x2="11" y2="1" stroke="white" stroke-width="1.5"/></svg>
-        <div class="hc-val" id="home-freq">101.1</div>
-        <div class="hc-label">RADIO</div>
-      </div>
-      <div class="home-card" onclick="showPage('tasks')">
-        <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><rect x="1" y="1" width="16" height="16" stroke="white" stroke-width="1.5"/><line x1="5" y1="6" x2="13" y2="6" stroke="white" stroke-width="1.5"/><line x1="5" y1="10" x2="10" y2="10" stroke="white" stroke-width="1.5"/></svg>
-        <div class="hc-val" id="home-tasks">0/3</div>
-        <div class="hc-label">TASKS</div>
-      </div>
-      <div class="home-card" onclick="showPage('map')">
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="white" stroke-width="1.5"/><polygon points="10,3 12,10 10,8 8,10" fill="white"/><circle cx="10" cy="10" r="1.5" fill="white"/></svg>
-        <div class="hc-val">32°N</div>
-        <div class="hc-label">MAP</div>
-      </div>
-      <div class="home-card" onclick="showPage('calc')">
-        <svg width="14" height="16" viewBox="0 0 16 18" fill="none"><rect x="1" y="1" width="14" height="16" stroke="white" stroke-width="1.5"/><rect x="3" y="3" width="10" height="3" fill="white"/><rect x="3" y="9" width="3" height="2" fill="white"/><rect x="6.5" y="9" width="3" height="2" fill="white"/><rect x="10" y="9" width="3" height="2" fill="white"/></svg>
-        <div class="hc-val">CALC</div>
-        <div class="hc-label">CALCULATOR</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STAT -->
-  <div class="page" id="page-stat">
-    <div class="page-title">STATUS</div>
-    <div class="stat-wrap">
-      <div class="big-clock" id="stat-time">--:--:--</div>
-      <div class="stat-date" id="stat-date">--- -- ----</div>
-      <div class="stat-row">
-        <div class="stat-box"><div class="sb-val" id="stat-bat">87%</div><div class="sb-label">BATTERY</div></div>
-        <div class="stat-box"><div class="sb-val">22°C</div><div class="sb-label">TEMP</div></div>
-        <div class="stat-box"><div class="sb-val">0 RAD</div><div class="sb-label">RADIATION</div></div>
-      </div>
-      <div class="bar-group">
-        <div class="bar-item"><div class="bar-head"><span>HP</span><span>87/100</span></div><div class="bar-track"><div class="bar-fill" style="width:87%"></div></div></div>
-        <div class="bar-item"><div class="bar-head"><span>AP</span><span>62/100</span></div><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div></div>
-        <div class="bar-item"><div class="bar-head"><span>PWR</span><span>94/100</span></div><div class="bar-track"><div class="bar-fill" style="width:94%"></div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCAN -->
-  <div class="page" id="page-scan">
-    <div class="page-title">SCANNER</div>
-    <div class="scan-wrap">
-      <div class="scan-circle" id="scan-circle" onclick="doScan()">
-        <div class="scan-circle-inner">
-          <div class="scan-plus">+</div>
-        </div>
-        <div class="scan-sweep" id="scan-sweep"></div>
-        <div class="scan-ping" id="scan-ping"></div>
-      </div>
-      <div class="scan-label" id="scan-label">TAP TO SCAN</div>
-      <div class="scan-readout" id="scan-readout"></div>
-    </div>
-  </div>
-
-  <!-- VAULT -->
-  <div class="page" id="page-vault">
-    <div class="page-title">CLASSIFIED ARCHIVE</div>
-    <div class="vault-wrap">
-      <button class="vault-btn" onclick="retrieveVault()">[ RETRIEVE ]</button>
-      <div class="vault-display" id="vault-display">
-        <div class="vault-id">AWAITING REQUEST</div>
-        <div class="vault-body" style="color:var(--dim);margin-top:8px;font-size:12px;">Press RETRIEVE to access classified data.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RADIO -->
-  <div class="page" id="page-radio">
-    <div class="page-title">COMMUNICATIONS</div>
-    <div class="radio-wrap">
-      <div class="radio-display">
-        <div class="radio-freq" id="radio-freq">101.1 FM</div>
-        <div class="radio-name" id="radio-name">WASTELAND FM</div>
-        <div class="waveform" id="waveform"></div>
-        <div class="radio-status" id="radio-status">▶ NOW BROADCASTING</div>
-      </div>
-      <div class="station-list">
-        <div class="station on" id="stn-0" onclick="selectStation(0)"><div class="s-name">WASTELAND FM</div><div class="s-on" id="sind-0">◉ ON AIR</div><div class="s-freq">101.1</div></div>
-        <div class="station" id="stn-1" onclick="selectStation(1)"><div class="s-name">VAULT RADIO</div><div class="s-on" id="sind-1">◉ ON AIR</div><div class="s-freq">88.3</div></div>
-        <div class="station" id="stn-2" onclick="selectStation(2)"><div class="s-name">DEAD AIR</div><div class="s-on" id="sind-2">◉ ON AIR</div><div class="s-freq">66.6</div></div>
-        <div class="station" id="stn-3" onclick="selectStation(3)"><div class="s-name">SIGNAL UNKNOWN</div><div class="s-on" id="sind-3">◉ ON AIR</div><div class="s-freq">???</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TASKS -->
-  <div class="page" id="page-tasks">
-    <div class="page-title">TASK LOG</div>
-    <div class="tasks-wrap">
-      <div class="task-bar">
-        <input class="task-input" id="task-input" type="text" placeholder="NEW TASK..." maxlength="40" onkeydown="if(event.key==='Enter')addTask()">
-        <button class="task-add" onclick="addTask()">ADD</button>
-      </div>
-      <div class="task-list" id="task-list"></div>
-    </div>
-  </div>
-
-  <!-- CALC -->
-  <div class="page" id="page-calc">
-    <div class="page-title">CALCULATOR</div>
-    <div class="calc-wrap">
-      <div class="calc-screen">
-        <div class="calc-expr" id="calc-expr"></div>
-        <div class="calc-val" id="calc-val">0</div>
-      </div>
-      <div class="calc-grid">
-        <button class="cb op" onclick="co('C')">C</button>
-        <button class="cb op" onclick="co('+/-')">±</button>
-        <button class="cb op" onclick="co('%')">%</button>
-        <button class="cb op eq" onclick="co('/')">÷</button>
-        <button class="cb" onclick="cn('7')">7</button>
-        <button class="cb" onclick="cn('8')">8</button>
-        <button class="cb" onclick="cn('9')">9</button>
-        <button class="cb op" onclick="co('*')">×</button>
-        <button class="cb" onclick="cn('4')">4</button>
-        <button class="cb" onclick="cn('5')">5</button>
-        <button class="cb" onclick="cn('6')">6</button>
-        <button class="cb op" onclick="co('-')">−</button>
-        <button class="cb" onclick="cn('1')">1</button>
-        <button class="cb" onclick="cn('2')">2</button>
-        <button class="cb" onclick="cn('3')">3</button>
-        <button class="cb op" onclick="co('+')">+</button>
-        <button class="cb wide" onclick="cn('0')">0</button>
-        <button class="cb" onclick="cn('.')">.</button>
-        <button class="cb eq" onclick="co('=')">=</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MAP -->
-  <div class="page" id="page-map">
-    <div class="page-title">NAVIGATION</div>
-    <div class="map-wrap">
-      <div class="compass">
-        <span class="cdir n">N</span><span class="cdir s">S</span>
-        <span class="cdir e">E</span><span class="cdir w">W</span>
-        <div class="needle" id="needle"><div class="needle-n"></div><div class="needle-s"></div></div>
-        <div class="compass-dot"></div>
-      </div>
-      <div class="map-coords">
-        <div class="coord-box"><div class="coord-val">32.07°N</div><div class="coord-label">LATITUDE</div></div>
-        <div class="coord-box"><div class="coord-val">34.78°E</div><div class="coord-label">LONGITUDE</div></div>
-      </div>
-      <div class="map-radar">
-        <div class="radar-dot"></div>
-        <div class="radar-ring"></div>
-        <div class="map-label">TEL AVIV · SEC 4</div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /content -->
 <script src="app.js"></script>
 </body>
 </html>

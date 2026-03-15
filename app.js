@@ -1,3 +1,27 @@
+// ── Page loader ───────────────────────────────────────
+const pages = ['home','stat','scan','vault','radio','tasks','calc','map'];
+
+async function loadPages() {
+  for (const id of pages) {
+    try {
+      const res = await fetch(`pages/${id}.html`);
+      const html = await res.text();
+      document.getElementById('page-' + id).innerHTML = html;
+    } catch(e) { console.warn('Could not load page:', id, e); }
+  }
+  // init after pages are loaded
+  initApp();
+}
+
+function initApp() {
+  tick();
+  setInterval(tick, 1000);
+  buildWaveform();
+  renderTasks();
+  setInterval(rotateBearing, 3500);
+  setInterval(simBattery, 5000);
+}
+
 // ── Helpers ─────────────────────────────────────────
 function el(id) { return document.getElementById(id); }
 
@@ -8,27 +32,22 @@ function tick() {
   const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
   const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
   const dateStr = `${days[now.getDay()]} ${String(now.getDate()).padStart(2,'0')} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  el('hdr-clock').textContent = t;
-  el('stat-time').textContent = t;
-  el('stat-date').textContent = dateStr;
-  const hm = t.slice(0,5);
-  if (el('home-clock-sm')) el('home-clock-sm').textContent = hm;
+  if (el('hdr-clock')) el('hdr-clock').textContent = t;
+  if (el('stat-time')) el('stat-time').textContent = t;
+  if (el('stat-date')) el('stat-date').textContent = dateStr;
+  if (el('home-clock-sm')) el('home-clock-sm').textContent = t.slice(0,5);
 }
-setInterval(tick, 1000);
-tick();
 
-// ── Battery sim ──────────────────────────────────────
+// ── Battery ──────────────────────────────────────────
 let bat = 87;
-setInterval(() => {
+function simBattery() {
   bat = Math.max(15, Math.min(99, bat + (Math.random() > 0.5 ? 1 : -1)));
-  const pct = bat + '%';
-  el('hdr-bat-pct').textContent = pct;
-  el('stat-bat').textContent = pct;
-  if (el('home-bat')) el('home-bat').textContent = pct;
-  // update battery fill bar width
+  if (el('hdr-bat-pct')) el('hdr-bat-pct').textContent = bat + '%';
+  if (el('stat-bat')) el('stat-bat').textContent = bat + '%';
+  if (el('home-bat')) el('home-bat').textContent = bat + '%';
   const fill = el('bat-fill');
-  if (fill) fill.setAttribute('width', Math.round(bat / 100 * 10));
-}, 5000);
+  if (fill) fill.setAttribute('width', Math.round(bat / 100 * 12));
+}
 
 // ── Navigation ───────────────────────────────────────
 function showPage(id) {
@@ -42,14 +61,17 @@ function showPage(id) {
 }
 
 // ── Waveform ─────────────────────────────────────────
-const wf = el('waveform');
-for (let i = 0; i < 22; i++) {
-  const b = document.createElement('div');
-  b.className = 'wb';
-  b.style.height = (Math.random() * 24 + 4) + 'px';
-  b.style.animationDelay = (Math.random() * 0.8) + 's';
-  b.style.animationDuration = (0.35 + Math.random() * 0.55) + 's';
-  wf.appendChild(b);
+function buildWaveform() {
+  const wf = el('waveform');
+  if (!wf) return;
+  for (let i = 0; i < 22; i++) {
+    const b = document.createElement('div');
+    b.className = 'wb';
+    b.style.height = (Math.random() * 22 + 4) + 'px';
+    b.style.animationDelay = (Math.random() * 0.8) + 's';
+    b.style.animationDuration = (0.35 + Math.random() * 0.55) + 's';
+    wf.appendChild(b);
+  }
 }
 
 // ── Radio ────────────────────────────────────────────
@@ -59,30 +81,20 @@ const stations = [
   { name: 'DEAD AIR',     freq: '66.6 FM'  },
   { name: 'SIGNAL UNKNOWN', freq: '???.? FM' },
 ];
-let curStation = 0;
 
 function selectStation(i) {
-  curStation = i;
-  el('radio-freq').textContent = stations[i].freq;
-  el('radio-name').textContent = stations[i].name;
+  if (el('radio-freq')) el('radio-freq').textContent = stations[i].freq;
+  if (el('radio-name')) el('radio-name').textContent = stations[i].name;
   if (el('home-freq')) el('home-freq').textContent = stations[i].freq.split(' ')[0];
-  document.querySelectorAll('.station').forEach((s, j) => {
-    s.classList.toggle('on', j === i);
-  });
+  document.querySelectorAll('.station').forEach((s, j) => s.classList.toggle('on', j === i));
   const wfEl = el('waveform');
-  if (i === 2) {
-    el('radio-status').textContent = '■ STATIC';
-    wfEl.style.opacity = '0.15';
-  } else if (i === 3) {
-    el('radio-status').textContent = '? UNKNOWN SOURCE';
-    wfEl.style.opacity = '0.5';
-  } else {
-    el('radio-status').textContent = '▶ NOW BROADCASTING';
-    wfEl.style.opacity = '1';
-  }
+  const statusEl = el('radio-status');
+  if (i === 2) { if(statusEl) statusEl.textContent = '■ STATIC'; if(wfEl) wfEl.style.opacity = '0.15'; }
+  else if (i === 3) { if(statusEl) statusEl.textContent = '? UNKNOWN SOURCE'; if(wfEl) wfEl.style.opacity = '0.5'; }
+  else { if(statusEl) statusEl.textContent = '▶ NOW BROADCASTING'; if(wfEl) wfEl.style.opacity = '1'; }
 }
 
-// ── Scan ─────────────────────────────────────────────
+// ── Scan (full screen) ────────────────────────────────
 const scanData = [
   ['ENTITY DETECTED: HUMANOID', 'THREAT LEVEL: NON-HOSTILE', 'DISTANCE: 12.4M', 'STATUS: MOVING NE'],
   ['STRUCTURE: CONCRETE', 'AGE ESTIMATE: 47 YRS', 'INTEGRITY: 62%', 'RADIATION: TRACE'],
@@ -95,26 +107,30 @@ let scanning = false;
 function doScan() {
   if (scanning) return;
   scanning = true;
-  el('scan-label').textContent = 'SCANNING...';
-  el('scan-sweep').classList.add('on');
-  el('scan-ping').classList.add('on');
-  el('scan-readout').classList.remove('show');
-  el('scan-readout').innerHTML = '';
+  const label = el('scan-label');
+  const beamH = el('scan-beam-h');
+  const beamV = el('scan-beam-v');
+  const out = el('scan-readout');
+  if (label) label.textContent = 'SCANNING...';
+  if (out) { out.classList.remove('show'); out.innerHTML = ''; }
+  if (beamH) { beamH.classList.remove('on'); void beamH.offsetWidth; beamH.classList.add('on'); }
+  if (beamV) { beamV.classList.remove('on'); void beamV.offsetWidth; beamV.classList.add('on'); }
 
   setTimeout(() => {
-    el('scan-sweep').classList.remove('on');
-    el('scan-ping').classList.remove('on');
+    if (beamH) beamH.classList.remove('on');
+    if (beamV) beamV.classList.remove('on');
     const rows = scanData[Math.floor(Math.random() * scanData.length)];
-    const out = el('scan-readout');
-    out.classList.add('show');
-    rows.forEach((r, i) => {
-      const d = document.createElement('div');
-      d.className = 'scan-line-item';
-      d.style.animationDelay = (i * 0.12) + 's';
-      d.textContent = '▸ ' + r;
-      out.appendChild(d);
-    });
-    el('scan-label').textContent = 'TAP TO SCAN AGAIN';
+    if (out) {
+      out.classList.add('show');
+      rows.forEach((r, i) => {
+        const d = document.createElement('div');
+        d.className = 'scan-line-item';
+        d.style.animationDelay = (i * 0.12) + 's';
+        d.textContent = '▸ ' + r;
+        out.appendChild(d);
+      });
+    }
+    if (label) label.textContent = 'TAP TO SCAN AGAIN';
     scanning = false;
   }, 2000);
 }
@@ -136,15 +152,12 @@ function retrieveVault() {
   do { i = Math.floor(Math.random() * vaultData.length); } while (i === lastVault);
   lastVault = i;
   const box = el('vault-display');
-  box.innerHTML = '<div class="vault-id">ACCESSING...</div><div class="vault-text" style="color:var(--dim);margin-top:8px;">DECRYPTING DATA...</div>';
+  if (!box) return;
+  box.innerHTML = '<div class="vault-id">ACCESSING...</div><div class="vault-body" style="color:var(--dim);margin-top:8px;">DECRYPTING DATA...</div>';
   setTimeout(() => {
     box.classList.add('glitch');
     setTimeout(() => box.classList.remove('glitch'), 250);
-    box.innerHTML = `
-      <div class="vault-id">${vaultData[i].id} · CLEARANCE: LEVEL 3</div>
-      <div class="vault-text" style="margin-top:10px;">${vaultData[i].text}</div>
-      <div class="vault-clear" style="margin-top:10px;">EYES ONLY · DO NOT DISTRIBUTE</div>
-    `;
+    box.innerHTML = `<div class="vault-id">${vaultData[i].id} · CLEARANCE: LEVEL 3</div><div class="vault-body" style="margin-top:10px;">${vaultData[i].text}</div><div class="vault-clear" style="margin-top:10px;">EYES ONLY · DO NOT DISTRIBUTE</div>`;
   }, 900);
 }
 
@@ -157,15 +170,12 @@ let tasks = [
 
 function renderTasks() {
   const list = el('task-list');
+  if (!list) return;
   list.innerHTML = '';
   tasks.forEach((t, i) => {
     const div = document.createElement('div');
     div.className = 'task-item' + (t.done ? ' done' : '');
-    div.innerHTML = `
-      <div class="t-check" onclick="toggleTask(${i})">${t.done ? '✓' : ''}</div>
-      <div class="t-text" onclick="toggleTask(${i})">${t.text}</div>
-      <div class="t-del" onclick="event.stopPropagation();deleteTask(${i})">✕</div>
-    `;
+    div.innerHTML = `<div class="t-check" onclick="toggleTask(${i})">${t.done ? '✓' : ''}</div><div class="t-text" onclick="toggleTask(${i})">${t.text}</div><div class="t-del" onclick="event.stopPropagation();deleteTask(${i})">✕</div>`;
     list.appendChild(div);
   });
   updateHomeTasks();
@@ -175,6 +185,7 @@ function toggleTask(i) { tasks[i].done = !tasks[i].done; renderTasks(); }
 function deleteTask(i) { tasks.splice(i, 1); renderTasks(); }
 function addTask() {
   const inp = el('task-input');
+  if (!inp) return;
   const v = inp.value.trim().toUpperCase();
   if (!v) return;
   tasks.unshift({ text: v, done: false });
@@ -185,59 +196,42 @@ function updateHomeTasks() {
   const done = tasks.filter(t => t.done).length;
   if (el('home-tasks')) el('home-tasks').textContent = done + '/' + tasks.length;
 }
-renderTasks();
 
 // ── Calculator ───────────────────────────────────────
 let cs = { val: '0', expr: '', op: null, prev: null, reset: false };
-
 function calcDisplay() {
   const v = cs.val;
-  el('calc-val').textContent = v.length > 10 ? parseFloat(v).toExponential(2) : v;
-  el('calc-expr').textContent = cs.expr;
+  if (el('calc-val')) el('calc-val').textContent = v.length > 10 ? parseFloat(v).toExponential(2) : v;
+  if (el('calc-expr')) el('calc-expr').textContent = cs.expr;
 }
-
 function cn(n) {
   if (cs.reset) { cs.val = ''; cs.reset = false; }
   if (n === '.' && cs.val.includes('.')) return;
   cs.val = (cs.val === '0' && n !== '.') ? n : (cs.val + n).slice(0, 12);
   calcDisplay();
 }
-
 function co(op) {
   const cur = parseFloat(cs.val) || 0;
-  if (op === 'C') {
-    cs = { val: '0', expr: '', op: null, prev: null, reset: false };
-  } else if (op === '+/-') {
-    cs.val = String(-cur);
-  } else if (op === '%') {
-    cs.val = String(cur / 100);
-  } else if (op === '=') {
+  if (op === 'C') { cs = { val: '0', expr: '', op: null, prev: null, reset: false }; }
+  else if (op === '+/-') { cs.val = String(-cur); }
+  else if (op === '%') { cs.val = String(cur / 100); }
+  else if (op === '=') {
     if (cs.op && cs.prev !== null) {
       const r = compute(cs.prev, cur, cs.op);
       cs.expr = `${cs.prev} ${cs.op} ${cur} =`;
       cs.val = String(r); cs.op = null; cs.prev = null; cs.reset = true;
     }
   } else {
-    if (cs.op && cs.prev !== null && !cs.reset) {
-      cs.prev = compute(cs.prev, cur, cs.op);
-      cs.val = String(cs.prev);
-    } else {
-      cs.prev = cur;
-    }
-    cs.op = op;
-    cs.expr = `${cs.prev} ${op}`;
-    cs.reset = true;
+    if (cs.op && cs.prev !== null && !cs.reset) { cs.prev = compute(cs.prev, cur, cs.op); cs.val = String(cs.prev); }
+    else { cs.prev = cur; }
+    cs.op = op; cs.expr = `${cs.prev} ${op}`; cs.reset = true;
   }
   calcDisplay();
 }
-
 function compute(a, b, op) {
-  if (op === '+') return round(a + b);
-  if (op === '-') return round(a - b);
-  if (op === '*') return round(a * b);
-  if (op === '/') return b === 0 ? 'ERR' : round(a / b);
+  const r = op==='+' ? a+b : op==='-' ? a-b : op==='*' ? a*b : b===0 ? 'ERR' : a/b;
+  return typeof r === 'number' ? Math.round(r * 1e10) / 1e10 : r;
 }
-function round(n) { return Math.round(n * 1e10) / 1e10; }
 
 // ── Compass ──────────────────────────────────────────
 let bearing = 0;
@@ -246,4 +240,6 @@ function rotateBearing() {
   const n = el('needle');
   if (n) n.style.transform = `rotate(${bearing}deg)`;
 }
-setInterval(rotateBearing, 3500);
+
+// ── Boot ─────────────────────────────────────────────
+loadPages();
